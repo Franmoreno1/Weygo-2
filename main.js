@@ -20,6 +20,12 @@
   let currentIdx = 0;
   let answers = {};
   let currentItinerary = null;   // stores last result for download
+
+  // true when running on Vercel/production — uses server-side proxy, no user key needed
+  function isDeployed() {
+    var h = window.location.hostname;
+    return h !== 'localhost' && h !== '127.0.0.1' && window.location.protocol !== 'file:';
+  }
   let visibleQuestions = [];
   let slideshowTimer = null;
   let currentSlide = 0;
@@ -358,6 +364,13 @@
     var saveBtn = el('api-key-save');
     var input = el('api-key-input');
 
+    // On Vercel: key lives in the server — never ask the user
+    if (isDeployed()) {
+      modal.setAttribute('hidden', '');
+      el('settings-btn').style.display = 'none';
+      return;
+    }
+
     if (!getApiKey()) {
       modal.removeAttribute('hidden');
     }
@@ -410,10 +423,10 @@
 
     // CTA: transition to quiz
     el('landing-start').addEventListener('click', function () {
+      if (isDeployed()) { hideLanding(); return; }
       var apiKey = getApiKey();
       if (!apiKey) {
         el('api-modal').removeAttribute('hidden');
-        // After saving key, auto-start
         el('api-key-save').addEventListener('click', function onSave() {
           if (getApiKey()) {
             el('api-key-save').removeEventListener('click', onSave);
@@ -815,8 +828,11 @@
   function submitQuiz() {
     if (isSubmitting) return;   // block double-fire
     var apiKey = getApiKey();
-    if (!apiKey) {
+
+    // On Vercel the key lives server-side — skip local key check
+    if (!isDeployed() && !apiKey) {
       el('api-modal').removeAttribute('hidden');
+      isSubmitting = false;
       return;
     }
 
@@ -912,20 +928,29 @@
   }
 
   function callClaude(apiKey, prompt) {
-    fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
+    var payload = {
+      model: 'claude-sonnet-4-6',
+      max_tokens: 16000,
+      messages: [{ role: 'user', content: prompt }]
+    };
+
+    var url, headers;
+    if (isDeployed()) {
+      // Server proxy — API key is in Vercel env vars, never sent to browser
+      url = '/api/chat';
+      headers = { 'Content-Type': 'application/json' };
+    } else {
+      // Local development — use key stored in localStorage
+      url = 'https://api.anthropic.com/v1/messages';
+      headers = {
         'Content-Type': 'application/json',
         'x-api-key': apiKey,
         'anthropic-version': '2023-06-01',
         'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 16000,
-        messages: [{ role: 'user', content: prompt }]
-      })
-    })
+      };
+    }
+
+    fetch(url, { method: 'POST', headers: headers, body: JSON.stringify(payload) })
     .then(function (res) {
       if (res.status === 401) {
         throw Object.assign(new Error('auth'), { isAuth: true });
