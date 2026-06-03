@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weygo — Your AI Travel Concierge</title>
+  <meta name="description" content="Weygo designs your perfect trip from scratch. Answer 19 questions, receive a complete bespoke itinerary." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css?v=20260603h" />
+</head>
+<body>
+
+  <!-- ===================== API KEY MODAL ===================== -->
+  <div id="api-modal" class="modal-overlay" hidden>
+    <div class="modal-box">
+      <div class="modal-logo">Weygo</div>
+      <h2 class="modal-title" data-en="Connect your AI concierge" data-es="Conectá tu concierge IA">Connect your AI concierge</h2>
+      <p class="modal-sub" data-en="Weygo uses Claude by Anthropic to design your itinerary. Your key is stored locally and never shared." data-es="Weygo usa Claude de Anthropic para diseñar tu itinerario. Tu clave se guarda localmente y nunca se comparte.">Weygo uses Claude by Anthropic to design your itinerary. Your key is stored locally and never shared.</p>
+      <div class="modal-field">
+        <label data-en="Anthropic API Key" data-es="Clave API de Anthropic">Anthropic API Key</label>
+        <input type="password" id="api-key-input" placeholder="sk-ant-..." autocomplete="off" />
+      </div>
+      <p class="modal-hint" data-en="Get your free key at console.anthropic.com" data-es="Obtené tu clave gratis en console.anthropic.com">Get your free key at console.anthropic.com</p>
+      <button id="api-key-save" class="btn-primary" data-en="Start planning →" data-es="Comenzar →">Start planning →</button>
+    </div>
+  </div>
+
+  <!-- ===================== LANDING SCREEN ===================== -->
+  <div id="landing-screen">
+
+    <aside class="landing-left">
+      <div class="landing-left-inner">
+
+        <header class="landing-header">
+          <div class="landing-logo">Weygo</div>
+          <button id="landing-lang" aria-label="Toggle language">ES</button>
+        </header>
+
+        <div class="landing-content">
+          <p class="landing-eyebrow" data-en="AI Travel Concierge" data-es="Concierge de Viajes con IA">AI Travel Concierge</p>
+          <h1 class="landing-title" data-en="Your perfect journey,<br>designed from scratch." data-es="Tu viaje perfecto,<br>diseñado desde cero.">Your perfect journey,<br>designed from scratch.</h1>
+          <p class="landing-sub" data-en="Answer a few questions and Weygo builds a complete, bespoke itinerary — with booking links, day-by-day plans, concierge tips, and visa info." data-es="Respondé algunas preguntas y Weygo construye un itinerario completo y personalizado — con links de reserva, plan día a día, consejos del concierge e información de visa.">Answer a few questions and Weygo builds a complete, bespoke itinerary — with booking links, day-by-day plans, concierge tips, and visa info.</p>
+
+          <ul class="landing-features">
+            <li>
+              <span class="lf-icon">◈</span>
+              <div>
+                <strong data-en="Fully personalized" data-es="Totalmente personalizado">Fully personalized</strong>
+                <span data-en="We consider your budget, dates, travel style, companions, and even the sports you practice." data-es="Consideramos tu presupuesto, fechas, estilo de viaje, compañeros e incluso los deportes que practicás.">We consider your budget, dates, travel style, companions, and even the sports you practice.</span>
+              </div>
+            </li>
+            <li>
+              <span class="lf-icon">◇</span>
+              <div>
+                <strong data-en="No destination needed" data-es="Sin destino previo">No destination needed</strong>
+                <span data-en="Come with a place in mind or let Weygo find your perfect match from anywhere in the world." data-es="Llegá con un destino en mente o dejá que Weygo encuentre tu combinación perfecta en cualquier parte del mundo.">Come with a place in mind or let Weygo find your perfect match from anywhere in the world.</span>
+              </div>
+            </li>
+            <li>
+              <span class="lf-icon">○</span>
+              <div>
+                <strong data-en="Ready to book" data-es="Listo para reservar">Ready to book</strong>
+                <span data-en="Every recommendation comes with curated booking links for flights, hotels, experiences, and insurance." data-es="Cada recomendación incluye links de reserva para vuelos, hoteles, experiencias y seguro de viaje.">Every recommendation comes with curated booking links for flights, hotels, experiences, and insurance.</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="landing-footer">
+          <button id="landing-start" class="landing-cta">
+            <span data-en="Begin your journey" data-es="Comenzar mi viaje">Begin your journey</span>
+            <span class="landing-cta-arrow">→</span>
+          </button>
+          <p class="landing-powered" data-en="Powered by Claude — Anthropic" data-es="Desarrollado con Claude — Anthropic">Powered by Claude — Anthropic</p>
+        </div>
+
+      </div>
+    </aside>
+
+    <div class="landing-right">
+      <!-- Slideshow images cycle here too -->
+      <div id="landing-slides"></div>
+      <div class="landing-slide-overlay"></div>
+      <div class="landing-caption">
+        <span class="lc-place" id="lc-place"></span>
+        <span class="lc-country" id="lc-country"></span>
+        <p class="lc-tagline" id="lc-tagline"></p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===================== MAIN APP ===================== -->
+  <div id="app" hidden>
+
+    <!-- LEFT PANEL: Quiz -->
+    <aside id="quiz-panel">
+
+      <!-- Header -->
+      <header class="quiz-header">
+        <div class="quiz-header-top">
+          <div class="logo" data-en="Weygo" data-es="Weygo">Weygo</div>
+          <div class="header-actions">
+            <button id="lang-toggle" aria-label="Toggle language">ES</button>
+            <button id="settings-btn" aria-label="Settings" title="Update API key">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <div class="progress-label">
+          <span id="progress-text" data-en="Question 1" data-es="Pregunta 1">Question 1</span>
+          <span id="progress-fraction">1 / 17</span>
+        </div>
+      </header>
+
+      <!-- Scrollable Question Body -->
+      <main class="quiz-body" id="quiz-body">
+        <!-- JS renders question here -->
+      </main>
+
+      <!-- Fixed Footer Navigation -->
+      <footer class="quiz-footer" id="quiz-footer">
+        <button id="btn-back" class="btn-nav btn-back" disabled>
+          <span class="btn-nav-arrow">←</span>
+          <span data-en="Back" data-es="Atrás">Back</span>
+        </button>
+        <button id="btn-continue" class="btn-nav btn-continue">
+          <span data-en="Continue" data-es="Continuar">Continue</span>
+          <span class="btn-nav-arrow">→</span>
+        </button>
+      </footer>
+
+    </aside>
+
+    <!-- RIGHT PANEL: Slideshow → Result -->
+    <main id="right-panel">
+
+      <!-- Slideshow (shown during quiz) -->
+      <div id="slideshow">
+        <div id="slides-container">
+          <!-- JS renders slides -->
+        </div>
+        <div class="slide-overlay"></div>
+        <div class="slide-caption" id="slide-caption">
+          <span class="slide-place" id="slide-place"></span>
+          <span class="slide-country" id="slide-country"></span>
+          <p class="slide-tagline" id="slide-tagline"></p>
+        </div>
+        <div class="slide-dots" id="slide-dots"></div>
+      </div>
+
+      <!-- Loading (shown while API call runs) -->
+      <div id="loading-screen" hidden>
+        <div class="loading-inner">
+          <div class="loading-logo">Weygo</div>
+          <div class="loading-anim">
+            <span></span><span></span><span></span>
+          </div>
+          <p class="loading-text" id="loading-text" data-en="Your concierge is designing your journey…" data-es="Tu concierge está diseñando tu viaje…">Your concierge is designing your journey…</p>
+        </div>
+      </div>
+
+      <!-- Result Panel (shown after API response) -->
+      <div id="result-panel" hidden>
+        <div id="result-content">
+          <!-- JS renders itinerary here -->
+        </div>
+      </div>
+
+    </main>
+
+  </div>
+
+  <script defer src="main.js?v=20260603i"></script>
+</body>
+</html>
