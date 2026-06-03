@@ -978,7 +978,20 @@
       if (err.isAuth) {
         renderAuthError();
       } else {
-        renderError(err.message);
+        var msg = err.message || 'Unknown error';
+        var isTimeout = msg.toLowerCase().includes('timeout') || msg.includes('504') || msg.includes('524');
+        var isNetwork = msg.toLowerCase().includes('fetch') || msg.toLowerCase().includes('network') || msg.toLowerCase().includes('failed');
+        if (isTimeout) {
+          renderError(lang === 'en'
+            ? 'The request timed out — Claude is taking too long. Try choosing fewer days for your trip and try again.'
+            : 'La solicitud tardó demasiado. Intentá elegir menos días de viaje e intentá de nuevo.');
+        } else if (isNetwork && isDeployed()) {
+          renderError(lang === 'en'
+            ? 'Could not reach the server. Check your internet connection and try again.'
+            : 'No se pudo conectar al servidor. Verificá tu conexión e intentá de nuevo.');
+        } else {
+          renderError(msg);
+        }
       }
     });
   }
