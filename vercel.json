@@ -1,4 +1,6 @@
 {
+  "buildCommand": null,
+  "outputDirectory": ".",
   "headers": [
     {
       "source": "/(.*)\\.html",
@@ -10,10 +12,6 @@
     },
     {
       "source": "/(.*)\\.css",
-      "headers": [{ "key": "Cache-Control", "value": "no-cache, must-revalidate" }]
-    },
-    {
-      "source": "/(.*)\\.json",
       "headers": [{ "key": "Cache-Control", "value": "no-cache, must-revalidate" }]
     },
     {
