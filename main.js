@@ -931,16 +931,15 @@
     var payload = {
       model: 'claude-sonnet-4-6',
       max_tokens: 16000,
+      stream: true,
       messages: [{ role: 'user', content: prompt }]
     };
 
     var url, headers;
     if (isDeployed()) {
-      // Server proxy — API key is in Vercel env vars, never sent to browser
       url = '/api/chat';
       headers = { 'Content-Type': 'application/json' };
     } else {
-      // Local development — use key stored in localStorage
       url = 'https://api.anthropic.com/v1/messages';
       headers = {
         'Content-Type': 'application/json',
@@ -952,22 +951,15 @@
 
     fetch(url, { method: 'POST', headers: headers, body: JSON.stringify(payload) })
     .then(function (res) {
-      if (res.status === 401) {
-        throw Object.assign(new Error('auth'), { isAuth: true });
-      }
+      if (res.status === 401) throw Object.assign(new Error('auth'), { isAuth: true });
       if (!res.ok) {
-        return res.json().then(function (body) {
-          var msg = (body.error && body.error.message) || ('HTTP ' + res.status);
-          throw new Error(msg);
-        }).catch(function (e) {
-          if (e.isAuth) throw e;
-          throw new Error('HTTP ' + res.status);
-        });
+        return res.json().then(function (b) {
+          throw new Error((b.error && b.error.message) || 'HTTP ' + res.status);
+        }).catch(function (e) { if (e.isAuth) throw e; throw new Error('HTTP ' + res.status); });
       }
-      return res.json();
+      return readStream(res);
     })
-    .then(function (data) {
-      var text = data.content && data.content[0] && data.content[0].text;
+    .then(function (text) {
       if (!text) throw new Error('Empty response from AI.');
       var cleaned = text.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/\s*```$/i, '').trim();
       var result = JSON.parse(cleaned);
@@ -978,21 +970,48 @@
       if (err.isAuth) {
         renderAuthError();
       } else {
-        var msg = err.message || 'Unknown error';
-        var isTimeout = msg.toLowerCase().includes('timeout') || msg.includes('504') || msg.includes('524');
-        var isNetwork = msg.toLowerCase().includes('fetch') || msg.toLowerCase().includes('network') || msg.toLowerCase().includes('failed');
-        if (isTimeout) {
-          renderError(lang === 'en'
-            ? 'The request timed out — Claude is taking too long. Try choosing fewer days for your trip and try again.'
-            : 'La solicitud tardó demasiado. Intentá elegir menos días de viaje e intentá de nuevo.');
-        } else if (isNetwork && isDeployed()) {
-          renderError(lang === 'en'
-            ? 'Could not reach the server. Check your internet connection and try again.'
-            : 'No se pudo conectar al servidor. Verificá tu conexión e intentá de nuevo.');
-        } else {
-          renderError(msg);
-        }
+        renderError(err.message || 'Unknown error');
       }
+    });
+  }
+
+  // Reads a streaming SSE response from Anthropic and returns the full text
+  function readStream(response) {
+    return new Promise(function (resolve, reject) {
+      var reader = response.body.getReader();
+      var decoder = new TextDecoder();
+      var fullText = '';
+      var buffer = '';
+
+      function read() {
+        reader.read().then(function (result) {
+          if (result.done) { resolve(fullText); return; }
+
+          buffer += decoder.decode(result.value, { stream: true });
+          var lines = buffer.split('\n');
+          buffer = lines.pop(); // keep incomplete last line
+
+          lines.forEach(function (line) {
+            if (!line.startsWith('data: ')) return;
+            var data = line.slice(6).trim();
+            if (data === '[DONE]') return;
+            try {
+              var evt = JSON.parse(data);
+              if (evt.type === 'content_block_delta' && evt.delta && evt.delta.text) {
+                fullText += evt.delta.text;
+              }
+              // Non-streaming fallback: plain message response
+              if (evt.content && evt.content[0] && evt.content[0].text) {
+                fullText = evt.content[0].text;
+              }
+            } catch (e) {}
+          });
+
+          read();
+        }).catch(reject);
+      }
+
+      read();
     });
   }
 
