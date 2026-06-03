@@ -1,29 +1,31 @@
-module.exports = async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+export const config = { runtime: 'edge' };
 
-  if (req.method === 'OPTIONS') return res.status(200).end();
-  if (req.method !== 'POST') return res.status(405).json({ error: { message: 'Method not allowed' } });
+export default async function handler(req) {
+  const cors = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Content-Type': 'application/json',
+  };
+
+  if (req.method === 'OPTIONS') return new Response(null, { status: 200, headers: cors });
+  if (req.method !== 'POST') return new Response(JSON.stringify({ error: { message: 'Method not allowed' } }), { status: 405, headers: cors });
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) return res.status(500).json({ error: { message: 'ANTHROPIC_API_KEY not configured in Vercel.' } });
+  if (!apiKey) return new Response(JSON.stringify({ error: { message: 'ANTHROPIC_API_KEY not configured in Vercel.' } }), { status: 500, headers: cors });
 
-  const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+  let body;
+  try { body = await req.json(); } catch { return new Response(JSON.stringify({ error: { message: 'Invalid request' } }), { status: 400, headers: cors }); }
 
   try {
     const upstream = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-      },
+      headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
       body: JSON.stringify(body),
     });
     const data = await upstream.json();
-    return res.status(upstream.status).json(data);
+    return new Response(JSON.stringify(data), { status: upstream.status, headers: cors });
   } catch (err) {
-    return res.status(500).json({ error: { message: err.message || 'Server error' } });
+    return new Response(JSON.stringify({ error: { message: err.message || 'Server error' } }), { status: 500, headers: cors });
   }
-};
+}
