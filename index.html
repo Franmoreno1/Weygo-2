@@ -3,14 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Weygo — Your AI Travel Concierge</title>
-  <meta name="description" content="Weygo designs your perfect trip from scratch. Answer 19 questions, receive a complete bespoke itinerary." />
+  <title>Weygo — Tu agente de viajes con IA</title>
+  <meta name="description" content="Respondé 19 preguntas y nuestra IA diseña tu viaje perfecto con itinerario completo, links de reserva y consejos de concierge." />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Weygo — Tu agente de viajes con IA" />
+  <meta property="og:description" content="Respondé 19 preguntas y nuestra IA diseña tu viaje perfecto." />
+  <meta property="og:url" content="https://weygo.vercel.app" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=1200&q=80" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Weygo — Tu agente de viajes con IA" />
+  <meta name="twitter:description" content="Respondé 19 preguntas y nuestra IA diseña tu viaje perfecto." />
+  <meta name="twitter:image" content="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=1200&q=80" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
-
-  <link rel="stylesheet" href="styles.css?v=20260603h" />
+  <link rel="stylesheet" href="styles.css?v=20260604" />
 </head>
 <body>
 
@@ -29,103 +39,165 @@
     </div>
   </div>
 
-  <!-- ===================== LANDING SCREEN ===================== -->
-  <div id="landing-screen">
-
-    <aside class="landing-left">
-      <div class="landing-left-inner">
-
-        <header class="landing-header">
-          <div class="landing-logo">Weygo</div>
-          <button id="landing-lang" aria-label="Toggle language">ES</button>
-        </header>
-
-        <div class="landing-content">
-          <p class="landing-eyebrow" data-en="AI Travel Concierge" data-es="Concierge de Viajes con IA">AI Travel Concierge</p>
-          <h1 class="landing-title" data-en="Your perfect journey,<br>designed from scratch." data-es="Tu viaje perfecto,<br>diseñado desde cero.">Your perfect journey,<br>designed from scratch.</h1>
-          <p class="landing-sub" data-en="Answer a few questions and Weygo builds a complete, bespoke itinerary — with booking links, day-by-day plans, concierge tips, and visa info." data-es="Respondé algunas preguntas y Weygo construye un itinerario completo y personalizado — con links de reserva, plan día a día, consejos del concierge e información de visa.">Answer a few questions and Weygo builds a complete, bespoke itinerary — with booking links, day-by-day plans, concierge tips, and visa info.</p>
-
-          <ul class="landing-features">
-            <li>
-              <span class="lf-icon">◈</span>
-              <div>
-                <strong data-en="Fully personalized" data-es="Totalmente personalizado">Fully personalized</strong>
-                <span data-en="We consider your budget, dates, travel style, companions, and even the sports you practice." data-es="Consideramos tu presupuesto, fechas, estilo de viaje, compañeros e incluso los deportes que practicás.">We consider your budget, dates, travel style, companions, and even the sports you practice.</span>
-              </div>
-            </li>
-            <li>
-              <span class="lf-icon">◇</span>
-              <div>
-                <strong data-en="No destination needed" data-es="Sin destino previo">No destination needed</strong>
-                <span data-en="Come with a place in mind or let Weygo find your perfect match from anywhere in the world." data-es="Llegá con un destino en mente o dejá que Weygo encuentre tu combinación perfecta en cualquier parte del mundo.">Come with a place in mind or let Weygo find your perfect match from anywhere in the world.</span>
-              </div>
-            </li>
-            <li>
-              <span class="lf-icon">○</span>
-              <div>
-                <strong data-en="Ready to book" data-es="Listo para reservar">Ready to book</strong>
-                <span data-en="Every recommendation comes with curated booking links for flights, hotels, experiences, and insurance." data-es="Cada recomendación incluye links de reserva para vuelos, hoteles, experiencias y seguro de viaje.">Every recommendation comes with curated booking links for flights, hotels, experiences, and insurance.</span>
-              </div>
-            </li>
-          </ul>
-        </div>
-
-        <div class="landing-footer">
-          <button id="landing-start" class="landing-cta">
-            <span data-en="Begin your journey" data-es="Comenzar mi viaje">Begin your journey</span>
-            <span class="landing-cta-arrow">→</span>
-          </button>
-          <p class="landing-powered" data-en="Powered by Claude — Anthropic" data-es="Desarrollado con Claude — Anthropic">Powered by Claude — Anthropic</p>
-        </div>
-
-      </div>
-    </aside>
-
-    <div class="landing-right">
-      <!-- Slideshow images cycle here too -->
-      <div id="landing-slides"></div>
-      <div class="landing-slide-overlay"></div>
-      <div class="landing-caption">
-        <span class="lc-place" id="lc-place"></span>
-        <span class="lc-country" id="lc-country"></span>
-        <p class="lc-tagline" id="lc-tagline"></p>
+  <!-- ===================== STICKY HEADER ===================== -->
+  <header id="site-header">
+    <div class="sh-inner">
+      <a class="sh-logo" href="#hero" data-en="Weygo" data-es="Weygo">Weygo</a>
+      <nav class="sh-nav" id="sh-nav">
+        <a href="#explore" data-en="Explore" data-es="Explorar">Explore</a>
+        <a href="#blog" data-en="Guides" data-es="Guías">Guides</a>
+        <a href="#how-it-works" data-en="How it works" data-es="Cómo funciona">How it works</a>
+      </nav>
+      <div class="sh-actions">
+        <button id="header-lang" class="sh-lang">ES</button>
+        <button id="settings-btn" class="sh-settings" aria-label="API settings" title="API settings">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+        </button>
+        <button id="header-plan-btn" class="sh-cta" data-en="Plan my trip" data-es="Planear mi viaje">Plan my trip</button>
       </div>
     </div>
+  </header>
 
-  </div>
+  <!-- ===================== MAIN SITE (scrollable) ===================== -->
+  <main id="main-site">
 
-  <!-- ===================== MAIN APP ===================== -->
-  <div id="app" hidden>
+    <!-- HERO -->
+    <section id="hero">
+      <div class="hero-left">
+        <div class="hero-left-inner">
+          <p class="hero-eyebrow" data-en="AI Travel Concierge" data-es="Concierge de Viajes con IA">AI Travel Concierge</p>
+          <h1 class="hero-title" data-en="Your perfect journey,<br>designed from scratch." data-es="Tu viaje perfecto,<br>diseñado desde cero.">Your perfect journey,<br>designed from scratch.</h1>
+          <p class="hero-sub" data-en="Answer a few questions and Weygo builds a complete, bespoke itinerary — day by day, with booking links, concierge tips and visa info." data-es="Respondé algunas preguntas y Weygo construye un itinerario completo — día a día, con links de reserva, consejos del concierge e info de visa.">Answer a few questions and Weygo builds a complete, bespoke itinerary — day by day, with booking links, concierge tips and visa info.</p>
+          <ul class="hero-features">
+            <li><span class="hf-icon">◈</span><div><strong data-en="Fully personalized" data-es="Totalmente personalizado">Fully personalized</strong><span data-en="Budget, dates, companions, travel style and sports level — all considered." data-es="Presupuesto, fechas, compañeros, estilo y nivel deportivo — todo considerado.">Budget, dates, companions, travel style and sports level — all considered.</span></div></li>
+            <li><span class="hf-icon">◇</span><div><strong data-en="No destination needed" data-es="Sin destino previo">No destination needed</strong><span data-en="Arrive with a place in mind or let Weygo find your perfect match." data-es="Llegá con un destino o dejá que Weygo encuentre tu combinación perfecta.">Arrive with a place in mind or let Weygo find your perfect match.</span></div></li>
+            <li><span class="hf-icon">○</span><div><strong data-en="Ready to book" data-es="Listo para reservar">Ready to book</strong><span data-en="Curated links for flights, hotels, experiences and insurance." data-es="Links curados para vuelos, hoteles, experiencias y seguro.">Curated links for flights, hotels, experiences and insurance.</span></div></li>
+          </ul>
+          <button id="hero-plan-btn" class="hero-cta">
+            <span data-en="Begin your journey" data-es="Comenzar mi viaje">Begin your journey</span>
+            <span class="hero-cta-arrow">→</span>
+          </button>
+          <p class="hero-powered" data-en="Powered by Claude — Anthropic" data-es="Desarrollado con Claude — Anthropic">Powered by Claude — Anthropic</p>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div id="hero-slides"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-caption">
+          <span class="hc-place" id="hc-place"></span>
+          <span class="hc-country" id="hc-country"></span>
+          <p class="hc-tagline" id="hc-tagline"></p>
+        </div>
+      </div>
+    </section>
 
-    <!-- LEFT PANEL: Quiz -->
+    <!-- HOW IT WORKS -->
+    <section id="how-it-works">
+      <div class="hiw-inner">
+        <p class="section-eyebrow" data-en="How it works" data-es="Cómo funciona">How it works</p>
+        <h2 class="section-title" data-en="Three steps to your perfect trip." data-es="Tres pasos hacia tu viaje perfecto.">Three steps to your perfect trip.</h2>
+        <div class="hiw-steps">
+          <div class="hiw-step">
+            <span class="hiw-num">01</span>
+            <h3 data-en="Answer the quiz" data-es="Respondé el quiz">Answer the quiz</h3>
+            <p data-en="19 adaptive questions about your travel style, budget, dates and dreams." data-es="19 preguntas adaptativas sobre tu estilo de viaje, presupuesto, fechas y sueños.">19 adaptive questions about your travel style, budget, dates and dreams.</p>
+          </div>
+          <div class="hiw-step">
+            <span class="hiw-num">02</span>
+            <h3 data-en="Claude designs your trip" data-es="Claude diseña tu viaje">Claude designs your trip</h3>
+            <p data-en="Our AI analyses every answer and builds a bespoke itinerary with real places and insider tips." data-es="Nuestra IA analiza cada respuesta y construye un itinerario personalizado con lugares reales y tips internos.">Our AI analyses every answer and builds a bespoke itinerary with real places and insider tips.</p>
+          </div>
+          <div class="hiw-step">
+            <span class="hiw-num">03</span>
+            <h3 data-en="Book and go" data-es="Reservá y viajá">Book and go</h3>
+            <p data-en="Every recommendation links directly to booking platforms with your dates pre-filled." data-es="Cada recomendación enlaza directo a plataformas de reserva con tus fechas ya cargadas.">Every recommendation links directly to booking platforms with your dates pre-filled.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXPLORE DESTINATIONS -->
+    <section id="explore">
+      <div class="explore-inner">
+        <p class="section-eyebrow" data-en="Explore Destinations" data-es="Explorar Destinos">Explore Destinations</p>
+        <h2 class="section-title" data-en="Where do you want to go?" data-es="¿A dónde querés ir?">Where do you want to go?</h2>
+
+        <div class="explore-filters" id="explore-filters">
+          <button class="ef-btn is-active" data-filter="all" data-en="All" data-es="Todos">All</button>
+          <button class="ef-btn" data-filter="europe" data-en="Europe" data-es="Europa">Europe</button>
+          <button class="ef-btn" data-filter="americas" data-en="Americas" data-es="Américas">Americas</button>
+          <button class="ef-btn" data-filter="asia" data-en="Asia" data-es="Asia">Asia</button>
+          <button class="ef-btn" data-filter="africa" data-en="Africa" data-es="África">Africa</button>
+          <button class="ef-btn" data-filter="oceania" data-en="Oceania" data-es="Oceanía">Oceania</button>
+          <span class="ef-sep">|</span>
+          <button class="ef-btn" data-filter="beach" data-en="Beach" data-es="Playa">Beach</button>
+          <button class="ef-btn" data-filter="nature" data-en="Nature" data-es="Naturaleza">Nature</button>
+          <button class="ef-btn" data-filter="culture" data-en="Culture" data-es="Cultura">Culture</button>
+          <button class="ef-btn" data-filter="adventure" data-en="Adventure" data-es="Aventura">Adventure</button>
+          <button class="ef-btn" data-filter="luxury" data-en="Luxury" data-es="Lujo">Luxury</button>
+        </div>
+
+        <div class="dest-grid" id="dest-grid">
+          <!-- JS renders destination cards -->
+        </div>
+      </div>
+    </section>
+
+    <!-- BLOG / GUIDES -->
+    <section id="blog">
+      <div class="blog-inner">
+        <p class="section-eyebrow" data-en="Travel Guides" data-es="Guías de Viaje">Travel Guides</p>
+        <h2 class="section-title" data-en="Curated for the curious traveller." data-es="Curadas para el viajero curioso.">Curated for the curious traveller.</h2>
+        <div class="blog-grid" id="blog-grid">
+          <!-- JS renders article cards -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer id="site-footer">
+    <div class="sf-inner">
+      <div class="sf-logo">Weygo</div>
+      <p class="sf-tagline" data-en="Your world, curated." data-es="Tu mundo, curado.">Your world, curated.</p>
+      <nav class="sf-nav">
+        <a href="#explore" data-en="Explore" data-es="Explorar">Explore</a>
+        <a href="#blog" data-en="Guides" data-es="Guías">Guides</a>
+        <a href="#how-it-works" data-en="How it works" data-es="Cómo funciona">How it works</a>
+        <a href="#" id="sf-plan-btn" data-en="Plan my trip" data-es="Planear mi viaje">Plan my trip</a>
+      </nav>
+      <p class="sf-affiliate" data-en="Weygo may earn a commission when you book through our links, at no additional cost to you." data-es="Weygo puede ganar una comisión cuando reservás a través de nuestros links, sin costo adicional para vos.">Weygo may earn a commission when you book through our links, at no additional cost to you.</p>
+      <p class="sf-copy">© 2026 Weygo. <span data-en="All rights reserved." data-es="Todos los derechos reservados.">All rights reserved.</span></p>
+    </div>
+  </footer>
+
+  <!-- ===================== QUIZ OVERLAY ===================== -->
+  <div id="quiz-overlay" hidden>
+
     <aside id="quiz-panel">
-
-      <!-- Header -->
       <header class="quiz-header">
         <div class="quiz-header-top">
-          <div class="logo" data-en="Weygo" data-es="Weygo">Weygo</div>
+          <div class="logo">Weygo</div>
           <div class="header-actions">
+            <button id="quiz-close-btn" class="quiz-close-btn" aria-label="Back to site">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
             <button id="lang-toggle" aria-label="Toggle language">ES</button>
-            <button id="settings-btn" aria-label="Settings" title="Update API key">
+            <button id="quiz-settings-btn" aria-label="Settings" title="Update API key">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
             </button>
           </div>
         </div>
-        <div class="progress-track">
-          <div class="progress-fill" id="progress-fill"></div>
-        </div>
+        <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
         <div class="progress-label">
-          <span id="progress-text" data-en="Question 1" data-es="Pregunta 1">Question 1</span>
+          <span id="progress-text">Question 1</span>
           <span id="progress-fraction">1 / 17</span>
         </div>
       </header>
 
-      <!-- Scrollable Question Body -->
-      <main class="quiz-body" id="quiz-body">
-        <!-- JS renders question here -->
-      </main>
+      <main class="quiz-body" id="quiz-body"></main>
 
-      <!-- Fixed Footer Navigation -->
       <footer class="quiz-footer" id="quiz-footer">
         <button id="btn-back" class="btn-nav btn-back" disabled>
           <span class="btn-nav-arrow">←</span>
@@ -136,17 +208,11 @@
           <span class="btn-nav-arrow">→</span>
         </button>
       </footer>
-
     </aside>
 
-    <!-- RIGHT PANEL: Slideshow → Result -->
     <main id="right-panel">
-
-      <!-- Slideshow (shown during quiz) -->
       <div id="slideshow">
-        <div id="slides-container">
-          <!-- JS renders slides -->
-        </div>
+        <div id="slides-container"></div>
         <div class="slide-overlay"></div>
         <div class="slide-caption" id="slide-caption">
           <span class="slide-place" id="slide-place"></span>
@@ -155,29 +221,20 @@
         </div>
         <div class="slide-dots" id="slide-dots"></div>
       </div>
-
-      <!-- Loading (shown while API call runs) -->
       <div id="loading-screen" hidden>
         <div class="loading-inner">
           <div class="loading-logo">Weygo</div>
-          <div class="loading-anim">
-            <span></span><span></span><span></span>
-          </div>
+          <div class="loading-anim"><span></span><span></span><span></span></div>
           <p class="loading-text" id="loading-text" data-en="Your concierge is designing your journey…" data-es="Tu concierge está diseñando tu viaje…">Your concierge is designing your journey…</p>
         </div>
       </div>
-
-      <!-- Result Panel (shown after API response) -->
       <div id="result-panel" hidden>
-        <div id="result-content">
-          <!-- JS renders itinerary here -->
-        </div>
+        <div id="result-content"></div>
       </div>
-
     </main>
 
-  </div>
+  </div><!-- /#quiz-overlay -->
 
-  <script defer src="main.js?v=20260603l"></script>
+  <script defer src="main.js?v=20260604"></script>
 </body>
 </html>
